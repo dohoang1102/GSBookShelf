@@ -38,18 +38,25 @@
 @implementation MyCellView
 
 @synthesize reuseIdentifier;
+@synthesize cellImage = _cellImage;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 125)];
-        
-        [imageView setImage:[UIImage imageNamed:@"BookShelfCell.png"]];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
+        imageView.tag = 10;
         [self addSubview:imageView];
         
     }
     return self;
+}
+
+- (void)setCellImage:(UIImage *)cellImage {
+    UIImageView *imageView = (UIImageView *)[self viewWithTag:10];
+    if (imageView) {
+        imageView.image = cellImage;
+    }
 }
 
 /*

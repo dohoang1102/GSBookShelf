@@ -33,13 +33,14 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#import <CoreGraphics/CoreGraphics.h>
 #import "ViewController.h"
 
 #import "MyCellView.h"
 #import "MyBookView.h"
 #import "MyBelowBottomView.h"
+#import "WZDeviceOrientation.h"
 
-#define CELL_HEIGHT 125
 
 @implementation ViewController
 
@@ -103,13 +104,14 @@
     
 	[self initBooks];
     
+    CGRect bounds = self.view.bounds;
     //AboveTopView *aboveTop = [[AboveTopView alloc] initWithFrame:CGRectMake(0, 0, 320, 164)];
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    _belowBottomView = [[MyBelowBottomView alloc] initWithFrame:CGRectMake(0, 0, 320, CELL_HEIGHT * 2)];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, bounds.size.width, self.navigationController.navigationBar.bounds.size.height)];
+    _belowBottomView = [[MyBelowBottomView alloc] initWithFrame:CGRectMake(0, 0, bounds.size.width, [self cellHeightOfBookShelfView:_bookShelfView] * 2)];
     
     //MyBelowBottomView *belowBottom = [[MyBelowBottomView alloc] initWithFrame:CGRectMake(0, 0, 320, CELL_HEIGHT * 2)];
-    
-    _bookShelfView = [[GSBookShelfView alloc] initWithFrame:CGRectMake(0, 0, 320, 460 - 44)];
+
+    _bookShelfView = [[GSBookShelfView alloc] initWithFrame:CGRectMake(0, 0, bounds.size.width, bounds.size.height)];
     [_bookShelfView setDataSource:self];
     //[_bookShelfView setShelfViewDelegate:self];
     
@@ -123,10 +125,10 @@
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     if (UIDeviceOrientationIsLandscape(orientation)) {
-        [_bookShelfView setFrame:CGRectMake(0, 0, 480, 320 - 44)];
+        [_bookShelfView setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     }
     else {
-        [_bookShelfView setFrame:CGRectMake(0, 0, 320, 460 - 44)];
+        [_bookShelfView setFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     }
     [_bookShelfView reloadData];
 }
@@ -166,7 +168,10 @@
     static NSString *identifier = @"cell";
     MyCellView *cellView = (MyCellView *)[bookShelfView dequeueReuseableCellViewWithIdentifier:identifier];
     if (cellView == nil) {
-        cellView = [[MyCellView alloc] initWithFrame:CGRectZero];
+        cellView = [[MyCellView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, [self cellHeightOfBookShelfView:_bookShelfView])];
+        NSString *imageName = WZInterfaceIsPortrait() ? @"BookShelfCell.png" : @"BookShelfCell-Landscape.png";
+        UIImage *cellImage = [UIImage imageNamed:imageName];
+        [cellView setCellImage:cellImage];
         cellView.reuseIdentifier = identifier;
     }
     return cellView;

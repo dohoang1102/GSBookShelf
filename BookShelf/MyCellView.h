@@ -36,8 +36,11 @@
 #import <UIKit/UIKit.h>
 #import "GSBookShelfCell.h"
 
-@interface MyCellView : UIView <GSBookShelfCell>
+@interface MyCellView : UIView <GSBookShelfCell> {
+    UIImage *_cellImage;
+}
 
 @property (nonatomic, strong) NSString *reuseIdentifier;
+@property (nonatomic, strong) UIImage *cellImage;
 
 @end
